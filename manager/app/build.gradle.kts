@@ -133,7 +133,7 @@ android {
         targetSdk = androidTargetSdkVersion
         versionCode = managerVersionCode
         versionName = managerVersionName
-        applicationId = managerPackageName
+        applicationId = "com.creeves.bakasu.tv"
 
         val isPrBuild = rootProject.extra["isPrBuild"] as Boolean
         buildConfigField("boolean", "IS_PR_BUILD", isPrBuild.toString())

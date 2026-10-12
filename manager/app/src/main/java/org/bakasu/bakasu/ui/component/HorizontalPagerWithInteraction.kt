@@ -24,23 +24,30 @@ fun HorizontalPagerWithInteraction(
     beyondViewportPageCount: Int = 0,
     pageNestedScrollConnection: NestedScrollConnection? = null,
     flingBehavior: TargetedFlingBehavior? = null,
-    enableGestureOverride: Boolean = true,
+    gestureOverride: Boolean = true,
     pageContent: @Composable PagerScope.(page: Int) -> Unit,
 ) {
+    // TV: the miuix gesture override is a touch-gesture arbitrator; on a
+    // D-pad-only device it captures/misroutes key events. Use the stock
+    // pager path instead (userScrollEnabled is still honored, and callers
+    // can pass false to lock pages to bar-only navigation).
+    val isTv = org.bakasu.bakasu.ui.util.LocalIsTv.current
+    val gestureOverride = enableGestureOverride && !isTv
+
     val nestedConnection = pageNestedScrollConnection ?: PagerDefaults.pageNestedScrollConnection(
         state = state,
         orientation = Orientation.Horizontal,
     )
     HorizontalPager(
         state = state,
-        modifier = if (enableGestureOverride) {
+        modifier = if (gestureOverride) {
             modifier.horizontalPagerSwipeOverride(state, enabled = userScrollEnabled)
         } else {
             modifier
         },
-        userScrollEnabled = if (enableGestureOverride) false else userScrollEnabled,
+        userScrollEnabled = if (gestureOverride) false else userScrollEnabled,
         beyondViewportPageCount = beyondViewportPageCount,
-        pageNestedScrollConnection = if (enableGestureOverride) {
+        pageNestedScrollConnection = if (gestureOverride) {
             pageNestedScrollConnection ?: PagerGestureNestedScrollConnection
         } else {
             nestedConnection

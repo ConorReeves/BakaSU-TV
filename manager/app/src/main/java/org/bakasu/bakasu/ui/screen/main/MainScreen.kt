@@ -47,6 +47,7 @@ import org.bakasu.bakasu.ui.util.LocalPortraitState
 import org.bakasu.bakasu.ui.util.LocalSelectedPage
 import org.bakasu.bakasu.ui.util.LocalSnackbarHost
 import org.bakasu.bakasu.ui.viewmodel.HomeViewModel
+import org.bakasu.bakasu.ui.util.LocalIsTv
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import top.yukonga.miuix.kmp.utils.PagerGestureNestedScrollConnection
@@ -71,6 +72,7 @@ fun MainScreen(
         initialPage = uiSelectedPage,
         pageCount = { pages.size },
     )
+    val isTv = LocalIsTv.current
     var userScrollEnabled by remember { mutableStateOf(true) }
     var animating by remember { mutableStateOf(false) }
     var animateJob by remember { mutableStateOf<Job?>(null) }
@@ -138,13 +140,18 @@ fun MainScreen(
                 enableGestureOverride = false,
                 modifier = Modifier
                     .fillMaxSize()
-                    .pagerGestureOverride(
-                        pagerState = pagerState,
-                        mode = pagerMode,
-                        enabled = userScrollEnabled,
+                    .then(
+                        if (!isTv) {
+                            Modifier.pagerGestureOverride(
+                                pagerState = pagerState,
+                                mode = pagerMode,
+                                enabled = userScrollEnabled,
+                            )
+                        } else {
+                            Modifier
+                        }
                     ),
-                state = pagerState,
-                userScrollEnabled = userScrollEnabled && !interceptPagerGestures,
+                userScrollEnabled = !isTv && userScrollEnabled && !interceptPagerGestures,
                 beyondViewportPageCount = if (homeState.isInitialDataLoaded) 1 else 0,
                 pageNestedScrollConnection = if (interceptPagerGestures) {
                     PagerGestureNestedScrollConnection

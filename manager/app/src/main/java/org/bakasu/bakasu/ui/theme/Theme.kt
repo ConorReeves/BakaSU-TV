@@ -77,6 +77,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.compose.ui.platform.LocalConfiguration
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -103,6 +104,8 @@ import org.bakasu.bakasu.ui.util.LocalBlurState
 import org.bakasu.bakasu.ui.util.LocalPagerPage
 import org.bakasu.bakasu.ui.util.LocalPagerState
 import org.bakasu.bakasu.ui.util.LocalStretchOverscrollCompensationState
+import org.bakasu.bakasu.ui.util.LocalIsTv
+import org.bakasu.bakasu.ui.util.isTvConfiguration
 import org.koin.compose.koinInject
 import top.yukonga.miuix.kmp.blur.BackdropEffectScope
 import top.yukonga.miuix.kmp.blur.BlendColorEntry
@@ -365,6 +368,7 @@ fun KernelSUTheme(
     CompositionLocalProvider(
         LocalDensity provides density,
         LocalBackgroundRenderState provides backgroundRenderState,
+        LocalIsTv provides isTvConfiguration(LocalConfiguration.current),
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
